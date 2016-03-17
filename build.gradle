@@ -1,0 +1,45 @@
+apply plugin: 'java'
+
+sourceSets {
+	main {
+		java {
+			srcDir 'source'
+		}
+	}
+
+	test {
+		java {
+			srcDir 'test'
+		}
+	}
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+if (JavaVersion.current().isJava8Compatible()) {
+	allprojects {
+		tasks.withType(Javadoc) {
+			options.addStringOption('Xdoclint:none', '-quiet')
+		}
+	}
+}
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+jar {
+	//manifest {
+	//	attributes 'Main-Class': 'kalah.program.Optimism'
+	//}
+}
+
+task myJavadocs(type: Javadoc) {
+	source = sourceSets.main.allJava
+	failOnError = false
+}

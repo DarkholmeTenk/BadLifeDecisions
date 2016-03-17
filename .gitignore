@@ -1,0 +1,13 @@
+# Filetypes
+*.class
+*.classpath
+*.project
+*.ser
+*.log
+*~
+
+# Directories
+.gradle/*
+build/*
+classes/*
+/bin/
