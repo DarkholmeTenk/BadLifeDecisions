@@ -1,3 +1,5 @@
+package bld;
+
 
 /**
  *  This class represents an artificial neuron with a given input size.
@@ -35,7 +37,7 @@ public class Neuron
     {
       this.inputWeights[inputNumber] = 1.0;
     }
-    output = Double.INFINITY;
+    output = Double.NaN;
   }
 
   /**
@@ -62,15 +64,15 @@ public class Neuron
    *
    *  @param The correct output for the last input example.
    */
-  public void train(double correctAnswer)
+  public void train(double correctAnswer) throws IllegalArgumentException
   {
     if(this.lastInput == null)
-      throw new Exception("No input provided.");
+      throw new IllegalArgumentException("No input provided.");
     for(int inputNumber = 0; inputNumber < this.numberOfInputConnections;
         inputNumber++)
     {
       this.inputWeights[inputNumber] += LEARNING_RATE
-        * (correctAnswer - this.output) * this.lastInput[inputNumber]
+        * (correctAnswer - this.output) * this.lastInput[inputNumber];
     }
   }
 
