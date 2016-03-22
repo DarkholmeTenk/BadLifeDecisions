@@ -46,7 +46,7 @@ public class Neuron
    *
    *  @param An input example of type double.
    */
-  public void input(double[] input) throws IllegalArgumentException
+  public double input(double... input) throws IllegalArgumentException
   {
     if(input.length != this.numberOfInputConnections)
       throw new IllegalArgumentException("Size mismatch between the neuron "
@@ -56,6 +56,7 @@ public class Neuron
     {
       this.output += input[inputNumber] * this.inputWeights[inputNumber];
     }
+    return this.output;
   }
 
   /**
