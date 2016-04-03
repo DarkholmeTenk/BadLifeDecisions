@@ -1,3 +1,5 @@
+package bld;
+
 import comp34120.ex2.PlayerImpl;
 import comp34120.ex2.PlayerType;
 import java.rmi.NotBoundException;

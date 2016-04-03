@@ -1,3 +1,5 @@
+package bld;
+
 import comp34120.ex2.PlayerImpl;
 import comp34120.ex2.PlayerType;
 import java.rmi.NotBoundException;
@@ -70,7 +72,7 @@ final class SimpleLeader
 		{
 			(new Timer()).schedule(new ExitTask(), p_delay);
 		}
-		
+
 		@Override
 		public void run()
 		{
