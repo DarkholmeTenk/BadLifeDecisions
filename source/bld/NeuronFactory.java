@@ -29,6 +29,9 @@ public class NeuronFactory
     final int numberOfInputs)
       throws IllegalArgumentException
   {
+    if(numberOfInputs < 1)
+      throw new IllegalArgumentException("Every neuron needs at least"
+                                          + " one input.");
     switch(type)
     {
       case BASIC_NEURON:
@@ -41,11 +44,28 @@ public class NeuronFactory
   private static Neuron createBasicNeuron(final int numberOfInputs)
   {
     Neuron returnNeuron = new Neuron(numberOfInputs);
-    for(int i = 0; i < 0 /*SOME NUMBER HERE*/; i++)
+    // Not finalised the data should really be crossfolded and then the second
+    // partition used for testing.
+    for(int day = 1; day < 61; day++)
     {
       try
       {
-      Record currentDay = platform.query(PlayerType.LEADER, i);
+        Record currentDay = platform.query(PlayerType.LEADER, day);
+        double lPrice = currentDay.m_leaderPrice;
+        double fPrice = currentDay.m_followerPrice;
+        /*
+         * Assumption has been made that the followers response function is
+         * polynomial in form. Apparently its still linear rgression according
+         * to wikipedia :D
+         */
+         double[] input = new double[numberOfInputs];
+         input[0] = lPrice;
+         for(int inputNo = 1; inputDay < numberOfInputs; inputDay++)
+         {
+           input[inputDay] = Math.pow(input[0], inputDay+1);
+         }
+         returnNeuron.input(input);
+         returnNeuron.train(fPrice);
       }
       catch(RemoteException e)
       {
