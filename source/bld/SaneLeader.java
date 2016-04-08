@@ -25,7 +25,7 @@ final class SaneLeader extends PlayerImpl {
    * @throws RemoteException
    * @throws NotBoundException
    */
-  PseudoLeader() throws RemoteException, NotBoundException {
+  SaneLeader() throws RemoteException, NotBoundException {
     super(PlayerType.LEADER, "Sane Leader");
   }
 
@@ -86,9 +86,9 @@ final class SaneLeader extends PlayerImpl {
    * @throws RemoteException This exception *MUST* be thrown by this method
    */
   @Override
-  public void handleDay(int day) throws RemoteException {
-    Record record = platform.query(/*type*/, /*day*/);
-    float price = /* compute new price */;
-    platform.publishPrice(/*type*/, price);
+  public void proceedNewDay(int day) throws RemoteException {
+    // Record record = platform.query(/*type*/, /*day*/);
+    // float price = /* compute new price */;
+    // platform.publishPrice(/*type*/, price);
   }
 }
