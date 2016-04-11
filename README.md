@@ -10,16 +10,16 @@ $ ./gradlew build
 
 ## Running
 
-The GUI must be running before any leaders can be run:
+The platform and GUI must be running before any leaders can be run:
 
 ```sh
-$ ./scripts/runGUI.sh
+$ ./scripts/runPlatform.sh
 ```
 
-With the GUI running, you can run a leader. For Example:
+With the platform running, you can run the leader.
 
 ```sh
-$ ./scripts/runLeader.sh bld.SimpleLeader
+$ ./scripts/runLeader.sh
 ```
 
 [repo]: https://github.com/DarkholmeTenk/BadLifeDecisions
