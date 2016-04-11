@@ -47,7 +47,7 @@ public abstract class AbstractPlayer implements Player
   }
 
   @Override
-	public void checkConnection() throws RemoteException {}
+  public void checkConnection() throws RemoteException {}
 
   @Override
   public void startSimulation(int steps) throws RemoteException
@@ -60,7 +60,7 @@ public abstract class AbstractPlayer implements Player
   {
     platform.log(playerType, "endSimulation() not supported by this player.");
   }
-  
+
   @Override
   public void goodbye() throws RemoteException
   {
