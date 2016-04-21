@@ -2,8 +2,11 @@ package bld;
 import bld.Neuron;
 import comp34120.ex2.Platform;
 import comp34120.ex2.PlayerType;
+import comp34120.ex2.PlayerImpl;
 import comp34120.ex2.Record;
 import java.rmi.RemoteException;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Class for creating the neuron and training it using the historic data.
@@ -11,11 +14,25 @@ import java.rmi.RemoteException;
 public class NeuronFactory
 {
 
-  private static final Platform platform = getPlatform();
+  private static Platform platform;
 
-  private static Platform getPlatform()
+
+  private static List<Record> getData()
   {
-    return null;
+    List<Record> data = new ArrayList<Record>()
+    try
+    {
+      for(int i = 1; i <= 60; i ++)
+      {
+        Record currentRecord = platform.query(PlayerType.LEADER, i);
+        data.add(currentRecord);
+      }
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+
   }
 
   /**
@@ -26,16 +43,20 @@ public class NeuronFactory
    *  @throws IllegalArgumentException thrown when invalid type.
    */
   public static Neuron createNeuron( final NeuronType type,
-    final int numberOfInputs)
+    final int numberOfInputs, Platform platformInput)
       throws IllegalArgumentException
   {
     if(numberOfInputs < 1)
       throw new IllegalArgumentException("Every neuron needs at least"
                                           + " one input.");
+    platform = platformInput;
     switch(type)
     {
       case BASIC_NEURON:
-        return createBasicNeuron(numberOfInputs);
+        Neuron neuron = createBasicNeuron(numberOfInputs);
+        List<Record> data = getData(player);
+        List<Record>[] crossfoldList = cross
+        return neuron;
       default:
         throw new IllegalArgumentException("Invalid type.");
     }
