@@ -7,6 +7,7 @@ import comp34120.ex2.Record;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Class for creating the neuron and training it using the historic data.
@@ -19,7 +20,7 @@ public class NeuronFactory
 
   private static List<Record> getData()
   {
-    List<Record> data = new ArrayList<Record>()
+    List<Record> data = new ArrayList<Record>();
     try
     {
       for(int i = 1; i <= 60; i ++)
@@ -32,7 +33,25 @@ public class NeuronFactory
     {
       e.printStackTrace();
     }
+    return data;
+  }
 
+  private static List<Record>[] crossfold(List<Record> data)
+  {
+    Random rand = new Random();
+    List<Record>[] returnSets = new ArrayList[2];
+    returnSets[0] = new ArrayList<Record>();
+    returnSets[1] = new ArrayList<Record>();
+    while(data.size() > 0 && data.size() % 2 == 0)
+    {
+      int selected = rand.nextInt(data.size());
+      returnSets[0].add(data.get(selected));
+      data.remove(selected);
+      selected = rand.nextInt(data.size());
+      returnSets[1].add(data.get(selected));
+      data.remove(selected);
+    }
+    return returnSets;
   }
 
   /**
@@ -53,10 +72,7 @@ public class NeuronFactory
     switch(type)
     {
       case BASIC_NEURON:
-        Neuron neuron = createBasicNeuron(numberOfInputs);
-        List<Record> data = getData(player);
-        List<Record>[] crossfoldList = cross
-        return neuron;
+        return createBasicNeuron(numberOfInputs);
       default:
         throw new IllegalArgumentException("Invalid type.");
     }
@@ -67,31 +83,25 @@ public class NeuronFactory
     Neuron returnNeuron = new Neuron(numberOfInputs);
     // Not finalised the data should really be crossfolded and then the second
     // partition used for testing.
+    List<Record> data = getData();
     for(int day = 1; day < 61; day++)
     {
-      try
-      {
-        Record currentDay = platform.query(PlayerType.LEADER, day);
-        double lPrice = currentDay.m_leaderPrice;
-        double fPrice = currentDay.m_followerPrice;
-        /*
-         * Assumption has been made that the followers response function is
-         * polynomial in form. Apparently its still linear rgression according
-         * to wikipedia :D
-         */
-         double[] input = new double[numberOfInputs];
-         input[0] = lPrice;
-         for(int inputNo = 1; inputDay < numberOfInputs; inputDay++)
-         {
-           input[inputDay] = Math.pow(input[0], inputDay+1);
-         }
-         returnNeuron.input(input);
-         returnNeuron.train(fPrice);
-      }
-      catch(RemoteException e)
-      {
-        e.printStackTrace();
-      }
+      Record currentDay = data.get(day-1);
+      double lPrice = currentDay.m_leaderPrice;
+      double fPrice = currentDay.m_followerPrice;
+      /*
+       * Assumption has been made that the followers response function is
+       * polynomial in form. Apparently its still linear rgression according
+       * to wikipedia :D
+       */
+       double[] input = new double[numberOfInputs];
+       input[0] = lPrice;
+       for(int inputNo = 1; inputNo < numberOfInputs; inputNo++)
+       {
+         input[inputNo] = Math.pow(input[0], inputNo+1);
+       }
+       returnNeuron.input(input);
+       returnNeuron.train(fPrice);
     }
     return returnNeuron;
   }
