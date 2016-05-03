@@ -87,18 +87,18 @@ public class NeuronFactory
     for(int day = 1; day < 61; day++)
     {
       Record currentDay = data.get(day-1);
-      double lPrice = currentDay.m_leaderPrice;
-      double fPrice = currentDay.m_followerPrice;
+      float lPrice = currentDay.m_leaderPrice;
+      float fPrice = currentDay.m_followerPrice;
       /*
        * Assumption has been made that the followers response function is
        * polynomial in form. Apparently its still linear rgression according
        * to wikipedia :D
        */
-       double[] input = new double[numberOfInputs];
+       float[] input = new float[numberOfInputs];
        input[0] = lPrice;
        for(int inputNo = 0; inputNo < numberOfInputs; inputNo++)
        {
-         input[inputNo] = Math.pow(input[0], inputNo);
+         input[inputNo] = (float)Math.pow((double)input[0], inputNo-1);
        }
        returnNeuron.input(input);
        returnNeuron.train(fPrice);

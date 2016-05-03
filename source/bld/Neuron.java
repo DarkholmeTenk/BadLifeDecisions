@@ -12,13 +12,13 @@ package bld;
 public class Neuron
 {
   /** Variable that holds the last input example.*/
-  protected double[] lastInput = null;
+  protected float[] lastInput = null;
   /** Size of input for this neuron, remains constant over lifetime. */
   protected final int numberOfInputConnections;
   /** An array representing the internal weights on input positions. */
   protected final double[] inputWeights;
   /** The output of the last input array. */
-  protected double output;
+  protected float output;
   /** The rate of change for an incorrect response. */
   private static final double LEARNING_RATE = 0.1;
 
@@ -37,7 +37,7 @@ public class Neuron
     {
       this.inputWeights[inputNumber] = 1.0;
     }
-    output = Double.NaN;
+    output = Float.NaN;
   }
 
   /**
@@ -46,7 +46,7 @@ public class Neuron
    *
    *  @param An input example of type double.
    */
-  public double input(double... input) throws IllegalArgumentException
+  public float input(float... input) throws IllegalArgumentException
   {
     if(input.length != this.numberOfInputConnections)
       throw new IllegalArgumentException("Size mismatch between the neuron "
@@ -65,7 +65,7 @@ public class Neuron
    *
    *  @param The correct output for the last input example.
    */
-  public void train(double correctAnswer) throws IllegalArgumentException
+  public void train(float correctAnswer) throws IllegalArgumentException
   {
     if(this.lastInput == null)
       throw new IllegalArgumentException("No input provided.");
@@ -79,7 +79,7 @@ public class Neuron
 
   //GETTERS
 
-  public double getOutput()
+  public float getOutput()
   {
     return this.output;
   }
