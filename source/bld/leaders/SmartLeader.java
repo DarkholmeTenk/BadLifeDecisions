@@ -2,23 +2,44 @@ package bld.leaders;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
 
 import bld.platform.AbstractLeader;
 import bld.NeuronFactory;
 import bld.NeuronType;
 import bld.Neuron;
+import bld.LinearRegression;
 
 import comp34120.ex2.Record;
 
-public class SmartLeader extends AbstractLeader 
+public class SmartLeader extends AbstractLeader
 {
-  private Neuron responseFunction;
+  private  float lastOptimizedPrice = -1.0f;
+
+  public List<Record> getDataPoints(int day)
+  {
+    List<Record> recordList = new ArrayList<Record>();
+    for(int i = 1; i < day; i++)
+    {
+      System.out.println("" + i);
+      try
+      {
+        recordList.add(platform.query(playerType, i));
+      }
+      catch(RemoteException e)
+      {
+        System.out.println("Could only access up to " + i );
+        break;
+      }
+    }
+    return recordList;
+  }
 
   public SmartLeader() throws RemoteException, NotBoundException
   {
-    super("Simple Leader");
-    responseFunction = NeuronFactory.createNeuron(NeuronType.BASIC_NEURON,
-    4, platform);
+    super("Smart Leader");
   }
 
   private float calculateProfit(float leader, float follower, float cost)
@@ -28,18 +49,13 @@ public class SmartLeader extends AbstractLeader
 
   private float optimize(int day)
   {
-    float currentOptimum = 0; 
-    float bestPricingStrategy = 0;    
+    float currentOptimum = 0;
+    float bestPricingStrategy = 0;
+    LinearRegression regression = new LinearRegression(getDataPoints(day));
     for(float i = 1.0f; i < 10.0f; i += 0.01f)
     {
-      float[] input = new float[4];
-      input[0] = i;
-      for(int inputNo = 0; inputNo < 4; inputNo++)
-      {
-        input[inputNo] = (float)Math.pow((double)input[0], inputNo-1);
-      }
-      float followerPrice = responseFunction.input(input);
-      float profit = calculateProfit(i, followerPrice, 1.0f);
+      float follower = regression.getSlope()*i + regression.getIntercept();
+      float profit = calculateProfit(i, follower, 1.0f);
       if(profit > currentOptimum)
       {
         currentOptimum = profit;
@@ -52,6 +68,7 @@ public class SmartLeader extends AbstractLeader
   @Override
   public void proceedNewDay(int day) throws RemoteException
   {
-    platform.publishPrice(playerType, optimize(day));
+    lastOptimizedPrice = optimize(day);
+    platform.publishPrice(playerType, lastOptimizedPrice);
   }
 }

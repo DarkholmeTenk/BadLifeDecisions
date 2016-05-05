@@ -56,6 +56,8 @@ public class Neuron
     {
       this.output += input[inputNumber] * this.inputWeights[inputNumber];
     }
+    this.lastInput = input;
+    System.out.println("" + this.output);
     return this.output;
   }
 

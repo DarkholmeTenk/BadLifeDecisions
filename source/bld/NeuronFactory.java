@@ -98,7 +98,7 @@ public class NeuronFactory
        input[0] = lPrice;
        for(int inputNo = 0; inputNo < numberOfInputs; inputNo++)
        {
-         input[inputNo] = (float)Math.pow((double)input[0], inputNo-1);
+         input[inputNo] = (float)Math.pow((double)input[0], inputNo);
        }
        returnNeuron.input(input);
        returnNeuron.train(fPrice);
