@@ -17,20 +17,19 @@ import comp34120.ex2.Record;
 public class SmartLeader extends AbstractLeader
 {
   private  float lastOptimizedPrice = -1.0f;
+  private LinearRegression regression;
 
   public List<Record> getDataPoints(int day)
   {
     List<Record> recordList = new ArrayList<Record>();
     for(int i = 1; i < day; i++)
     {
-      System.out.println("" + i);
       try
       {
         recordList.add(platform.query(playerType, i));
       }
       catch(RemoteException e)
       {
-        System.out.println("Could only access up to " + i );
         break;
       }
     }
@@ -51,7 +50,7 @@ public class SmartLeader extends AbstractLeader
   {
     float currentOptimum = 0;
     float bestPricingStrategy = 0;
-    LinearRegression regression = new LinearRegression(getDataPoints(day));
+    regression = new LinearRegression(getDataPoints(day).subList(day-11, day-1));
     for(float i = 1.0f; i < 10.0f; i += 0.01f)
     {
       float follower = regression.getSlope()*i + regression.getIntercept();
@@ -62,6 +61,7 @@ public class SmartLeader extends AbstractLeader
         bestPricingStrategy = i;
       }
     }
+    System.out.println(calculateProfit(bestPricingStrategy, regression.getSlope()*bestPricingStrategy + regression.getIntercept(), 1.0f));
     return bestPricingStrategy;
   }
 
@@ -69,6 +69,7 @@ public class SmartLeader extends AbstractLeader
   public void proceedNewDay(int day) throws RemoteException
   {
     lastOptimizedPrice = optimize(day);
+    System.out.println("" + day + ": " + regression.getRSquared());
     platform.publishPrice(playerType, lastOptimizedPrice);
   }
 }
