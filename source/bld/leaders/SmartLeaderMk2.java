@@ -2,59 +2,60 @@ package bld.leaders;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 import bld.platform.AbstractLeader;
 import bld.NeuronFactory;
 import bld.NeuronType;
 import bld.Neuron;
-import bld.LinearRegression;
 
 import comp34120.ex2.Record;
 
 public class SmartLeaderMk2 extends AbstractLeader
 {
-  protected  float lastOptimizedPrice = -1.0f;
   private Neuron responseFunction;
-  protected List<Float> profits = new ArrayList<Float>();
-  protected float lastProfit;
+  private List<Float> profits;
+  private float lastOptimizedPrice = -1.0f;
+
 
   public SmartLeaderMk2() throws RemoteException, NotBoundException
   {
-    super("Smart Leader Mk2");
+    super("Simple Leader Mk2");
   }
 
-  protected float optimize(int day)
+  private float optimize(int day)
   {
     float currentOptimum = 0;
     float bestPricingStrategy = 0;
     for(float i = 1.0f; i < 10.0f; i += 0.01f)
     {
       float[] input = new float[4];
-      for(int j = 0; j < 4; j++)
+      input[0] = i;
+      for(int inputNo = 0; inputNo < 4; inputNo++)
       {
-        input[j] = (float)Math.pow(i, j);
+        input[inputNo] = (float)Math.pow((double)input[0], inputNo-1);
       }
-      float follower = responseFunction.input(input);
-      float profit = calculateProfit(i, follower, 1.0f);
+      float followerPrice = responseFunction.input(input);
+      float profit = calculateProfit(i, followerPrice, 1.0f);
       if(profit > currentOptimum)
       {
         currentOptimum = profit;
         bestPricingStrategy = i;
       }
     }
-    lastProfit = currentOptimum;
     return bestPricingStrategy;
   }
 
   @Override
   public void proceedNewDay(int day) throws RemoteException
   {
-    responseFunction = NeuronFactory.createNeuron(NeuronType.BASIC_NEURON, 4, platform);
+    if(lastOptimizedPrice != -1.0f)
+    {
+      Record lastDay = platform.query(playerType, day - 1);
+      responseFunction.train(lastDay.m_followerPrice);
+      profits.add(calculateProfit(lastDay.m_leaderPrice, lastDay.m_followerPrice));
+    }
     lastOptimizedPrice = optimize(day);
-    profits.add(lastProfit);
     platform.publishPrice(playerType, lastOptimizedPrice);
   }
 
@@ -62,6 +63,8 @@ public class SmartLeaderMk2 extends AbstractLeader
   public void startSimulation(int steps)
   {
     profits = new ArrayList<Float>();
+    responseFunction = NeuronFactory.createNeuron(NeuronType.BASIC_NEURON,
+    4, platform);
   }
 
   @Override

@@ -24,8 +24,9 @@ public class NeuronFactory
     List<Record> data = new ArrayList<Record>();
     try
     {
-      for(int i = 1; i <= 60; i ++)
+      for(int i = 1; i < 101; i++)
       {
+        System.out.println(i);
         Record currentRecord = platform.query(PlayerType.LEADER, i);
         data.add(currentRecord);
       }
@@ -99,12 +100,11 @@ public class NeuronFactory
        input[0] = lPrice;
        for(int inputNo = 0; inputNo < numberOfInputs; inputNo++)
        {
-         input[inputNo] = (float)Math.pow((double)input[0], inputNo);
+         input[inputNo] = (float)Math.pow((double)input[inputNo], inputNo);
        }
        returnNeuron.input(input);
        returnNeuron.train(fPrice);
     }
-    System.out.println(Arrays.toString(returnNeuron.getWeights()));
     return returnNeuron;
   }
 }

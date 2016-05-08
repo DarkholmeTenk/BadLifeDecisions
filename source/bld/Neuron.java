@@ -1,5 +1,6 @@
 package bld;
 
+import java.util.Arrays;
 
 /**
  *  This class represents an artificial neuron with a given input size.
@@ -57,7 +58,6 @@ public class Neuron
       this.output += input[inputNumber] * this.inputWeights[inputNumber];
     }
     this.lastInput = input;
-    System.out.println("" + this.output);
     return this.output;
   }
 
@@ -76,7 +76,10 @@ public class Neuron
     {
       this.inputWeights[inputNumber] += LEARNING_RATE
         * (correctAnswer - this.output) * this.lastInput[inputNumber];
+      System.out.println("" + LEARNING_RATE
+        * (correctAnswer - this.output) * this.lastInput[inputNumber] + ",  " + (correctAnswer - this.output) + ",  " + this.lastInput[inputNumber]);
     }
+    System.out.println(Arrays.toString(this.inputWeights));
   }
 
   //GETTERS
