@@ -8,6 +8,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Arrays;
 
 /**
  * Class for creating the neuron and training it using the historic data.
@@ -84,9 +85,9 @@ public class NeuronFactory
     // Not finalised the data should really be crossfolded and then the second
     // partition used for testing.
     List<Record> data = getData();
-    for(int day = 1; day < 61; day++)
+    for(int day = 0; day < data.size(); day++)
     {
-      Record currentDay = data.get(day-1);
+      Record currentDay = data.get(day);
       float lPrice = currentDay.m_leaderPrice;
       float fPrice = currentDay.m_followerPrice;
       /*
@@ -103,6 +104,7 @@ public class NeuronFactory
        returnNeuron.input(input);
        returnNeuron.train(fPrice);
     }
+    System.out.println(Arrays.toString(returnNeuron.getWeights()));
     return returnNeuron;
   }
 }

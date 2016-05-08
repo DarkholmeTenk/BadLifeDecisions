@@ -15,6 +15,6 @@ public class Main
   public static void main(final String[] args)
     throws RemoteException, NotBoundException
   {
-    new SmartLeader();
+    new SmartLeaderMk2();
   }
 }

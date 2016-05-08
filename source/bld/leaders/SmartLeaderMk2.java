@@ -14,26 +14,30 @@ import bld.LinearRegression;
 
 import comp34120.ex2.Record;
 
-public class SmartLeader extends AbstractLeader
+public class SmartLeaderMk2 extends AbstractLeader
 {
   protected  float lastOptimizedPrice = -1.0f;
-  private LinearRegression regression;
+  private Neuron responseFunction;
   protected List<Float> profits = new ArrayList<Float>();
   protected float lastProfit;
 
-  public SmartLeader() throws RemoteException, NotBoundException
+  public SmartLeaderMk2() throws RemoteException, NotBoundException
   {
-    super("Smart Leader");
+    super("Smart Leader Mk2");
   }
 
   protected float optimize(int day)
   {
     float currentOptimum = 0;
     float bestPricingStrategy = 0;
-    regression = new LinearRegression(getDataPoints(day).subList(day-30, day-1));
     for(float i = 1.0f; i < 10.0f; i += 0.01f)
     {
-      float follower = regression.getSlope()*i + regression.getIntercept();
+      float[] input = new float[4];
+      for(int j = 0; j < 4; j++)
+      {
+        input[j] = (float)Math.pow(i, j);
+      }
+      float follower = responseFunction.input(input);
       float profit = calculateProfit(i, follower, 1.0f);
       if(profit > currentOptimum)
       {
@@ -48,6 +52,7 @@ public class SmartLeader extends AbstractLeader
   @Override
   public void proceedNewDay(int day) throws RemoteException
   {
+    responseFunction = NeuronFactory.createNeuron(NeuronType.BASIC_NEURON, 4, platform);
     lastOptimizedPrice = optimize(day);
     profits.add(lastProfit);
     platform.publishPrice(playerType, lastOptimizedPrice);
